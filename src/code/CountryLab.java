@@ -8,9 +8,8 @@ import java.util.stream.Stream;
 
 public class CountryLab
 {
-    private static Stream<String> getStream(final List<String> list) {
-        return list.stream();
-    }
+    //TODO make a function to add a stream of strings into a txt file
+    //TODO for now just end each stream with foreach(System.out::println) to see the stream
 
     public static void main(final String[] args) throws
                                                  IOException
