@@ -2,7 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 
@@ -37,7 +39,8 @@ public class CountryLab
             Files.createFile(data);
         }
 
-        final List<String> countries;
+
+        List<String> countries = new ArrayList<>();
 
         try
         {
@@ -48,6 +51,7 @@ public class CountryLab
             e.printStackTrace();
         }
 
-
+        //this is an example of what we are doing
+        countries.stream().forEach(System.out::println);
     }
 }
