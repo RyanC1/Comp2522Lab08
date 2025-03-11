@@ -68,7 +68,7 @@ public class  CountryLab
         //this is an example of what we are doing
         countries.stream().forEach(System.out::println);
 
-        /***
+        /*
          * 6. Sorted Names (Ascending): List all country names in alphabetical order.
          */
         System.out.println("\n6. Country names in ascending order:");
@@ -77,7 +77,7 @@ public class  CountryLab
                 .toList();
         filteredStream6.forEach(System.out::println);
 
-        /***
+        /*
          * 7. Sorted Names (Descending): List all country names in reverse alphabetical order.
          */
         System.out.println("\n7. Country names in descending order:");
@@ -86,7 +86,7 @@ public class  CountryLab
                 .toList();
         filteredStream7.forEach(System.out::println);
 
-        /***
+        /*
          * 8. Unique First Letters: List the unique first letters of all country names.
          */
         final List<Character> firstCharList;
@@ -98,14 +98,14 @@ public class  CountryLab
                 .collect(Collectors.toList());
         firstCharList.forEach(System.out::println);
 
-        /***
+        /*
          * 9. Count of Countries: Write the total count of country names.
          */
         System.out.println("\n9. Total count of country names:");
         final long count = filteredStream(countries).count();
         System.out.println(count);
 
-        /***
+        /*
          * 10. Longest Country Name: Write the longest country name.
          */
         System.out.println("\n10. Longest country name:");
@@ -114,7 +114,7 @@ public class  CountryLab
 
         System.out.println(longest);
 
-        /***
+        /*
          * 11. Shortest Country Name: Write the shortest country name.
          */
         System.out.println("\n11. Shortest country name:");
@@ -122,6 +122,50 @@ public class  CountryLab
                 .min(Comparator.comparingInt(String::length));
 
         System.out.println(shortest);
+
+        /*
+         * 12. Names in Uppercase: Write all country names converted to uppercase.
+         */
+        System.out.println("\n12. Countries in uppercase:");
+        filteredStream(countries)
+                .map(String::toUpperCase)
+                .forEach(System.out::println);
+
+        /*
+         * 13. Countries with More Than One Word: List all country names with more than one word.
+         */
+        System.out.println("\n13. Multi-word countries:");
+        filteredStream(countries)
+                .filter(x->x.matches(".*\\S+(\\s|-)\\S+.*"))
+                .forEach(System.out::println);
+
+        /*
+         * 14. Country Names to Character Count: Map each country name to its character count,
+         * writing each name and count as "Country: X characters".
+         */
+        System.out.println("\n14. Countries to char count:");
+        filteredStream(countries)
+                .map(x-> x + ": " + x.length() + " characters")
+                .forEach(System.out::println);
+
+        /*
+         * 15. Any Name Starts with "Z": Write "true" if any country name starts with "Z"; otherwise,
+         *   "false".
+         */
+        System.out.println("\n15. Does a country start with \"Z\":");
+        System.out.println(
+                filteredStream(countries)
+                .anyMatch(x->x.matches("^Z.*")));
+
+        /*
+         * 16. All Names Longer Than 3: Write "true" if all country names are longer than 3 characters;
+         * otherwise, "false".
+         */
+        System.out.println("\n16. Are all countries longer than 3 characters:");
+        System.out.println(
+                filteredStream(countries)
+                        .allMatch(x->x.length() > 3));
+
 
     }
 }
