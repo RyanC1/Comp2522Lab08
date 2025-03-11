@@ -2,11 +2,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+/**
+ * A program to demonstrate different stream functions.
+ * @author Ted, Joseph and Ryan
+ * @version 1.0
+ */
 
 
 public class  CountryLab
@@ -82,9 +86,42 @@ public class  CountryLab
                 .toList();
         filteredStream7.forEach(System.out::println);
 
+        /***
+         * 8. Unique First Letters: List the unique first letters of all country names.
+         */
+        final List<Character> firstCharList;
 
+        System.out.println("\n8. List the unique first letters of all country names:");
+        firstCharList = filteredStream(countries)
+                .map(country -> country.charAt(0)) // Extract first letter
+                .distinct() // Remove duplicates while keeping order
+                .collect(Collectors.toList());
+        firstCharList.forEach(System.out::println);
 
+        /***
+         * 9. Count of Countries: Write the total count of country names.
+         */
+        System.out.println("\n9. Total count of country names:");
+        final long count = filteredStream(countries).count();
+        System.out.println(count);
 
+        /***
+         * 10. Longest Country Name: Write the longest country name.
+         */
+        System.out.println("\n10. Longest country name:");
+        Optional<String> longest = filteredStream(countries)
+                .max(Comparator.comparingInt(String::length));
+
+        System.out.println(longest);
+
+        /***
+         * 11. Shortest Country Name: Write the shortest country name.
+         */
+        System.out.println("\n11. Shortest country name:");
+        Optional<String> shortest = filteredStream(countries)
+                .min(Comparator.comparingInt(String::length));
+
+        System.out.println(shortest);
 
     }
 }
