@@ -66,7 +66,47 @@ public class  CountryLab
         }
 
         //this is an example of what we are doing
-        countries.stream().forEach(System.out::println);
+        //countries.stream().forEach(System.out::println);
+
+        /*
+         * 1. Long Country Names: Write "Country names longer than 10 characters:" followed by all country names with more than 10 characters (always one country per line).
+         */
+        System.out.println("\n1. Country names longer than 10 characters:");
+        final List<String> filteredStream1 = filteredStream(countries)
+                .filter(s -> s.length() > 10)
+                .toList();
+        filteredStream1.forEach(System.out::println);
+        /*
+         * 2. Short Country Names: Write "Country names shorter than 5 characters:" followed by all country names with fewer than 5 characters. * */
+        System.out.println("\n2. Country names shorter than 5 characters:");
+        final List<String> filteredStream2 = filteredStream(countries)
+                .filter(s -> s.length() < 5)
+                .toList();
+        filteredStream2.forEach(System.out::println);
+        /*
+         * 3. Starting with "A": List all country names that start with the letter "A".
+         */
+        System.out.println("\n3. Country names that start with the letter \"A\"");
+        final List<String> filteredStream3 = filteredStream(countries)
+                .filter(s -> s.startsWith("A"))
+                .toList();
+        filteredStream3.forEach(System.out::println);
+        /*
+         * 4. Ending with "land": List all country names that end with "land".
+         */
+        System.out.println("\n4. Country names that end with the \"land\"");
+        final List<String> filteredStream4 = filteredStream(countries)
+                .filter(s -> s.endsWith("land"))
+                .toList();
+        filteredStream4.forEach(System.out::println);
+        /*
+         * 5. Containing "United": List all countries containing the word "United".
+         */
+        System.out.println("\n5. Countries containing the word \"United\"");
+        final List<String> filteredStream5 = filteredStream(countries)
+                .filter(s -> s.contains("United"))
+                .toList();
+        filteredStream5.forEach(System.out::println);
 
         /*
          * 6. Sorted Names (Ascending): List all country names in alphabetical order.
