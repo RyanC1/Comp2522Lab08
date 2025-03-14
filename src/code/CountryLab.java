@@ -2,210 +2,244 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Stream;
+import java.util.Comparator;
 
 /**
- * A program to demonstrate different stream functions.
- * @author Ted, Joseph and Ryan
+ * A program to demonstrate different stream and NIO capabilities
+ *
+ * @author Ted Ip
+ * @author Joseph Louwerse
+ * @author Ryan Chu
  * @version 1.0
  */
-
-
-public class  CountryLab
+public class CountryLab
 {
-    //TODO make a function to add a stream of strings into a txt file
-    //TODO for now just end each stream with foreach(System.out::println) to see the stream
+    final static int START = 0;
 
-    /**
+    /*
      * Reusable method to get non-null stream
-     * */
-    private static Stream<String> filteredStream (final List<String> listToBeFiltered)
+     *
+     * @param listToBeFiltered the string list to be converted
+     */
+    private static Stream<String> filteredStream(final List<String> listToBeFiltered)
     {
-        return listToBeFiltered.stream().filter(p-> p != null && !p.isBlank());
+        return listToBeFiltered.stream()
+                               .filter(Objects::nonNull)
+                               .filter(p -> !p.isBlank());
     }
 
-
-    public static void main(final String[] args) throws
-                                                 IOException
+    /**
+     * Drives the program
+     * @param args unused
+     */
+    public static void main(final String[] args)
     {
-        Path countriesPath = Paths.get("src",
-                                   "res",
-                                   "week8countries.txt");
-
-        Path matches = Paths.get("src",
-                                 "res",
-                                 "matches");
-
-        Path data = Paths.get("src",
-                              "res",
-                              "matches",
-                              "data.txt");
-
-        if(Files.notExists(matches))
-        {
-            Files.createDirectory(matches);
-        }
-
-        if(Files.notExists(data))
-        {
-            Files.createFile(data);
-        }
+        final Path         countriesPath;
+        final Path         matchesPath;
+        final Path         dataPath;
+        final List<String> countries;
+        final List<String> streamResults;
 
 
-        List<String> countries = new ArrayList<>();
+        countriesPath = Paths.get("src",
+                                  "res",
+                                  "week8countries.txt");
+        matchesPath   = Paths.get("matches");
+        dataPath      = Paths.get("matches",
+                                  "data.txt");
+        streamResults = new ArrayList<>();
+        countries     = new ArrayList<>();
+
 
         try
         {
-            countries = Files.readAllLines(countriesPath);
+            if(Files.notExists(countriesPath))
+            {
+                System.out.println("Error. 'clues.txt' not found; exiting...");
+                return;
+            }
+            countries.addAll(Files.readAllLines(countriesPath));
         }
-        catch (final IOException e)
+        catch(final IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Error reading countries file : " +
+                               e.getMessage());
+            return;
         }
 
-        //this is an example of what we are doing
-        //countries.stream().forEach(System.out::println);
 
         /*
          * 1. Long Country Names: Write "Country names longer than 10 characters:" followed by all country names with more than 10 characters (always one country per line).
          */
-        System.out.println("\n1. Country names longer than 10 characters:");
-        final List<String> filteredStream1 = filteredStream(countries)
-                .filter(s -> s.length() > 10)
-                .toList();
-        filteredStream1.forEach(System.out::println);
+        streamResults.add("Country names longer than 10 characters:");
+        streamResults.addAll(filteredStream(countries)
+                                     .filter(s -> s.length() > 10)
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
+
         /*
-         * 2. Short Country Names: Write "Country names shorter than 5 characters:" followed by all country names with fewer than 5 characters. * */
-        System.out.println("\n2. Country names shorter than 5 characters:");
-        final List<String> filteredStream2 = filteredStream(countries)
-                .filter(s -> s.length() < 5)
-                .toList();
-        filteredStream2.forEach(System.out::println);
+         * 2. Short Country Names: Write "Country names shorter than 5 characters:" followed by all country names with fewer than 5 characters.
+         */
+        streamResults.add("Country names shorter than 5 characters:");
+        streamResults.addAll(filteredStream(countries)
+                                     .filter(s -> s.length() < 5)
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
+
         /*
          * 3. Starting with "A": List all country names that start with the letter "A".
          */
-        System.out.println("\n3. Country names that start with the letter \"A\"");
-        final List<String> filteredStream3 = filteredStream(countries)
-                .filter(s -> s.startsWith("A"))
-                .toList();
-        filteredStream3.forEach(System.out::println);
+        streamResults.add("Country names starting with 'A':");
+        streamResults.addAll(filteredStream(countries)
+                                     .filter(s -> s.startsWith("A"))
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
+
         /*
          * 4. Ending with "land": List all country names that end with "land".
          */
-        System.out.println("\n4. Country names that end with the \"land\"");
-        final List<String> filteredStream4 = filteredStream(countries)
-                .filter(s -> s.endsWith("land"))
-                .toList();
-        filteredStream4.forEach(System.out::println);
+        streamResults.add("Country names that end with the \"land\"");
+        streamResults.addAll(filteredStream(countries)
+                                     .filter(s -> s.endsWith("land"))
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
+
         /*
          * 5. Containing "United": List all countries containing the word "United".
          */
-        System.out.println("\n5. Countries containing the word \"United\"");
-        final List<String> filteredStream5 = filteredStream(countries)
-                .filter(s -> s.contains("United"))
-                .toList();
-        filteredStream5.forEach(System.out::println);
+        streamResults.add("Countries containing the word \"United\"");
+        streamResults.addAll(filteredStream(countries)
+                                     .filter(s -> s.contains("United"))
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 6. Sorted Names (Ascending): List all country names in alphabetical order.
          */
-        System.out.println("\n6. Country names in ascending order:");
-        final List<String> filteredStream6 = filteredStream(countries)
-                .sorted()
-                .toList();
-        filteredStream6.forEach(System.out::println);
+        streamResults.add("Country names in ascending order:");
+        streamResults.addAll(filteredStream(countries)
+                                     .sorted()
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 7. Sorted Names (Descending): List all country names in reverse alphabetical order.
          */
-        System.out.println("\n7. Country names in descending order:");
-        final List<String> filteredStream7 = filteredStream(countries)
-                .sorted(Comparator.reverseOrder())
-                .toList();
-        filteredStream7.forEach(System.out::println);
+        streamResults.add("Country names in descending order:");
+        streamResults.addAll(filteredStream(countries)
+                                     .sorted(Comparator.reverseOrder())
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 8. Unique First Letters: List the unique first letters of all country names.
          */
-        final List<Character> firstCharList;
-
-        System.out.println("\n8. List the unique first letters of all country names:");
-        firstCharList = filteredStream(countries)
-                .map(country -> country.charAt(0)) // Extract first letter
-                .distinct() // Remove duplicates while keeping order
-                .collect(Collectors.toList());
-        firstCharList.forEach(System.out::println);
+        streamResults.add("List the unique first letters of all country names:");
+        streamResults.addAll(filteredStream(countries)
+                                     .map(country -> String.valueOf(country.charAt(START))) // Extract first letter
+                                     .distinct() // Remove duplicates while keeping order
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 9. Count of Countries: Write the total count of country names.
          */
-        System.out.println("\n9. Total count of country names:");
-        final long count = filteredStream(countries).count();
-        System.out.println(count);
+        streamResults.add("Total count of country names:");
+        streamResults.add(String.valueOf(filteredStream(countries).count()));
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 10. Longest Country Name: Write the longest country name.
          */
-        System.out.println("\n10. Longest country name:");
-        Optional<String> longest = filteredStream(countries)
-                .max(Comparator.comparingInt(String::length));
-
-        System.out.println(longest);
+        streamResults.add("Longest country name:");
+        streamResults.add(filteredStream(countries)
+                                  .max(Comparator.comparingInt(String::length))
+                                  .orElse("No longest country name"));
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 11. Shortest Country Name: Write the shortest country name.
          */
-        System.out.println("\n11. Shortest country name:");
-        Optional<String> shortest = filteredStream(countries)
-                .min(Comparator.comparingInt(String::length));
-
-        System.out.println(shortest);
+        streamResults.add("Shortest country name:");
+        streamResults.add(filteredStream(countries)
+                                  .min(Comparator.comparingInt(String::length))
+                                  .orElse("No shortest country name"));
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 12. Names in Uppercase: Write all country names converted to uppercase.
          */
-        System.out.println("\n12. Countries in uppercase:");
-        filteredStream(countries)
-                .map(String::toUpperCase)
-                .forEach(System.out::println);
+        streamResults.add("Countries in uppercase:");
+        streamResults.addAll(filteredStream(countries)
+                                     .map(String::toUpperCase)
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 13. Countries with More Than One Word: List all country names with more than one word.
          */
-        System.out.println("\n13. Multi-word countries:");
-        filteredStream(countries)
-                .filter(x->x.matches(".*\\S+(\\s|-)\\S+.*"))
-                .forEach(System.out::println);
+        streamResults.add("Multi-word countries:");
+        streamResults.addAll(filteredStream(countries)
+                                     .filter(x -> x.matches(".*\\S+(\\s|-)\\S+.*"))
+                                     .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 14. Country Names to Character Count: Map each country name to its character count,
          * writing each name and count as "Country: X characters".
          */
-        System.out.println("\n14. Countries to char count:");
-        filteredStream(countries)
-                .map(x-> x + ": " + x.length() + " characters")
-                .forEach(System.out::println);
+        streamResults.add("Countries to char count:");
+        streamResults.addAll(filteredStream(countries).map(x -> x +
+                                                                ": " +
+                                                                x.length() +
+                                                                " characters")
+                                                      .toList());
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 15. Any Name Starts with "Z": Write "true" if any country name starts with "Z"; otherwise,
          *   "false".
          */
-        System.out.println("\n15. Does a country start with \"Z\":");
-        System.out.println(
+        streamResults.add("Does a country start with \"Z\":");
+        streamResults.add(String.valueOf(
                 filteredStream(countries)
-                .anyMatch(x->x.matches("^Z.*")));
+                        .anyMatch(x -> x.matches("^Z.*"))));
+        streamResults.add("\n---------------------------------------\n");
 
         /*
          * 16. All Names Longer Than 3: Write "true" if all country names are longer than 3 characters;
          * otherwise, "false".
          */
-        System.out.println("\n16. Are all countries longer than 3 characters:");
-        System.out.println(
+        streamResults.add("Are all countries longer than 3 characters:");
+        streamResults.add(String.valueOf(
                 filteredStream(countries)
-                        .allMatch(x->x.length() > 3));
+                        .allMatch(x -> x.length() >
+                                       3)));
 
+
+        try
+        {
+            if(Files.notExists(matchesPath))
+            {
+                Files.createDirectory(matchesPath);
+            }
+
+            Files.write(dataPath,
+                        streamResults,
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING);
+
+        }
+        catch(final IOException e)
+        {
+            System.out.println("Something went wrong when creating data.txt:" +
+                               e.getMessage());
+        }
 
     }
 }
