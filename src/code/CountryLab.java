@@ -186,7 +186,7 @@ public class CountryLab
         streamResults.add("Multi-word countries:");
         streamResults.addAll(filteredStream(countries)
                                      .map(String::trim)
-                                     .filter(x -> x.matches(".*(\\s|-)+.*"))
+                                     .filter(x -> x.matches("(.*)[^\\s-](\\s|-)+[^\\s-](.*)"))
                                      .toList());
         streamResults.add("\n---------------------------------------\n");
 
